@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tasks     tasks[]
+
+  @@map("users")
+}
+
+model tasks {
+  id          String   @id @default(uuid())
+  name        String   @db.VarChar(250)
+  description String?  @db.VarChar(250)
+  startDate   DateTime
+  endDate     DateTime
+  isPriority  Boolean  @default(false)
+  isDone      Boolean  @default(false)
+  hasFrecuency Boolean  @default(false)
+  userId      String   @db.VarChar(250)
+  user        users    @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("tasks")
+}
